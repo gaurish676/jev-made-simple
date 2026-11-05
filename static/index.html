@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jev Answer Verifier — Simple Decision Demo</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-group">
+        <div class="logo-badge">⚡ JEV</div>
+        <div class="title-meta">
+          <h1>Jev Answer Verifier</h1>
+          <p>Ask a question &bull; Type your answer &bull; Watch Jev calculate if it's correct</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-pulse">Mode: Local Jev Engine</span>
+        <span class="badge badge-speed" id="latency-tag">⚡ ~3ms Latency</span>
+      </div>
+    </header>
+
+    <!-- Question Selector Section -->
+    <section class="question-selector">
+      <span class="selector-label">1. Choose a Question:</span>
+      <div class="question-pills" id="question-pills">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Active Question & Answer Box -->
+    <main class="grid-layout">
+      <div class="panel input-panel">
+        <div class="panel-header">
+          <span class="category-tag" id="current-category">Category</span>
+          <button id="btn-toggle-answer" class="btn-subtle">Show Expected Answer 👁️</button>
+        </div>
+
+        <div class="question-display">
+          <div class="label-tiny">CURRENT QUESTION:</div>
+          <h2 id="current-question-text" class="question-prompt">Loading question...</h2>
+          <div id="expected-answer-box" class="expected-box hidden">
+            <strong>Target Answer:</strong> <span id="expected-answer-text">...</span>
+          </div>
+        </div>
+
+        <!-- Custom Mode Fields (Hidden unless "Custom" pill is clicked) -->
+        <div id="custom-fields" class="custom-fields hidden">
+          <label>Custom Question:</label>
+          <input type="text" id="custom-q-input" placeholder="e.g. What is the tallest mountain in the world?">
+          <label>Expected Target Answer:</label>
+          <input type="text" id="custom-a-input" placeholder="e.g. Mount Everest">
+        </div>
+
+        <div class="field-group">
+          <label for="user-answer-input">Your Answer:</label>
+          <textarea id="user-answer-input" rows="4" placeholder="Type your answer here in plain English... (e.g., Paris, or it is about 120, etc.)"></textarea>
+        </div>
+
+        <div class="action-row">
+          <button id="btn-submit" class="btn-primary">
+            <span>⚡ Verify Answer with Jev</span>
+            <span class="shortcut">Enter</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Jev Evaluation & Probability Breakdown -->
+      <div class="panel output-panel">
+        <div class="panel-header">
+          <h2>2. Jev's Decision & Probabilities</h2>
+          <span class="stat-pill" id="stat-latency">Latency: -- ms</span>
+        </div>
+
+        <div id="verdict-banner" class="verdict-banner idle">
+          <div class="verdict-icon">❓</div>
+          <div class="verdict-text-group">
+            <h3 id="verdict-title">Waiting for your answer...</h3>
+            <p id="verdict-desc">Type your answer on the left and click "Verify Answer with Jev" to see the decision.</p>
+          </div>
+        </div>
+
+        <div class="primitives-grid" id="primitives-grid">
+          <!-- Primitive 1: Noul -->
+          <div class="card-primitive">
+            <div class="prim-header">
+              <span class="prim-title">1. Noul (Binary Probability)</span>
+              <span class="prim-tag tag-noul">Yes / No</span>
+            </div>
+            <p class="prim-desc">Calibrated probability float that the answer is correct.</p>
+            <div class="noul-content">
+              <div class="noul-big-pct" id="noul-val">--%</div>
+              <div class="noul-meta-text">
+                <span id="noul-decision" class="bold-text">--</span>
+                <span id="noul-raw" class="dim-text">p = 0.0000</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Primitive 2: Choice -->
+          <div class="card-primitive">
+            <div class="prim-header">
+              <span class="prim-title">2. Choice (Accuracy Category)</span>
+              <span class="prim-tag tag-choice">Softmax</span>
+            </div>
+            <p class="prim-desc">Distribution across discrete accuracy brackets.</p>
+            <div class="choice-breakdown" id="choice-bars">
+              <!-- Rendered by app.js -->
+              <div class="dim-placeholder">Bars appear after submit</div>
+            </div>
+          </div>
+
+          <!-- Primitive 3: Score -->
+          <div class="card-primitive">
+            <div class="prim-header">
+              <span class="prim-title">3. Score (Continuous Quality)</span>
+              <span class="prim-tag tag-score">0.0 to 2.0</span>
+            </div>
+            <p class="prim-desc">Expectation rating along a continuous spectrum.</p>
+            <div class="score-content">
+              <div class="score-val-row">
+                <span class="score-number" id="score-val">--</span>
+                <span class="score-max">/ 2.0 scale</span>
+              </div>
+              <div class="score-track">
+                <div class="score-pin" id="score-pin" style="left: 0%;"></div>
+              </div>
+              <div class="score-labels">
+                <span>0.0 Incorrect</span>
+                <span>1.0 Partial</span>
+                <span>2.0 Perfect</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
